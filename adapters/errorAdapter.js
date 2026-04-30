@@ -1,6 +1,5 @@
 /**
  * Custom Error Adapters for formatting exceptions
- * Using factory functions to avoid the 'class' keyword while maintaining Error functionality.
  */
 
 const createError = (message, statusCode, name, errors = null) => {
