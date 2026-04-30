@@ -1,7 +1,7 @@
 /**
  * Centralized Response Helper for consistent API outputs
  */
-class ResponseHelper {
+const ResponseHelper = {
   /**
    * Success response
    * @param {Object} res - Express response object
@@ -9,13 +9,13 @@ class ResponseHelper {
    * @param {Object|Array} data - Data to send back
    * @param {Number} statusCode - HTTP status code
    */
-  static success(res, message, data = null, statusCode = 200) {
+  success: (res, message, data = null, statusCode = 200) => {
     return res.status(statusCode).json({
       success: true,
       message,
       data
     });
-  }
+  },
 
   /**
    * Error response
@@ -24,13 +24,13 @@ class ResponseHelper {
    * @param {Number} statusCode - HTTP status code
    * @param {Array|Object} errors - Detailed errors
    */
-  static error(res, message, statusCode = 500, errors = null) {
+  error: (res, message, statusCode = 500, errors = null) => {
     return res.status(statusCode).json({
       success: false,
       message,
       errors
     });
   }
-}
+};
 
 module.exports = ResponseHelper;
