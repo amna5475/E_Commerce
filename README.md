@@ -1,4 +1,4 @@
-# E-Commerce Marketplace API (Daraz Clone)
+# E-Commerce Marketplace API 
 
 A robust, production-ready Multi-vendor E-commerce Backend API built with Node.js, Express, and Sequelize (PostgreSQL). This project implements advanced features similar to major marketplaces like Daraz.
 
