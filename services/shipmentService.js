@@ -4,13 +4,13 @@ const { NotFoundError } = require('../adapters/errorAdapter');
 /**
  * Shipment Service for business logic and DB operations
  */
-class ShipmentService {
+const ShipmentService = {
   /**
    * Create a new shipment
    * @param {String} orderId - Order ID
    * @param {String} sellerId - Seller ID
    */
-  static async createShipment(orderId, sellerId) {
+  createShipment: async (orderId, sellerId) => {
     const { shipments, orders } = await Models();
     
     const order = await orders.findByPk(orderId);
@@ -26,14 +26,14 @@ class ShipmentService {
       status: 'pending',
       pickup_at: new Date()
     });
-  }
+  },
 
   /**
    * Update shipment status and log event
    * @param {String} id - Shipment ID
    * @param {String} status - New status
    */
-  static async updateShipmentStatus(id, status) {
+  updateShipmentStatus: async (id, status) => {
     const { shipments, shipment_events } = await Models();
 
     const shipment = await shipments.findByPk(id);
@@ -57,28 +57,28 @@ class ShipmentService {
     });
 
     return shipment;
-  }
+  },
 
   /**
    * Get shipment by order ID
    * @param {String} orderId - Order ID
    */
-  static async getShipmentByOrderId(orderId) {
+  getShipmentByOrderId: async (orderId) => {
     const { shipments, shipment_events } = await Models();
     return await shipments.findOne({
       where: { order_id: orderId },
       include: [{ model: shipment_events }]
     });
-  }
+  },
 
   /**
    * Get shipment events
    * @param {String} shipmentId - Shipment ID
    */
-  static async getShipmentEvents(shipmentId) {
+  getShipmentEvents: async (shipmentId) => {
     const { shipment_events } = await Models();
     return await shipment_events.findAll({ where: { shipment_id: shipmentId } });
   }
-}
+};
 
 module.exports = ShipmentService;

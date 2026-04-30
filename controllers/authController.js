@@ -4,23 +4,23 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Auth Controller for request handling logic
  */
-class AuthController {
+const AuthController = {
   /**
    * Register a new user
    */
-  static async register(req, res, next) {
+  register: async (req, res, next) => {
     try {
       const user = await AuthService.register(req.body);
       return ResponseHelper.success(res, 'Registration successful', user, 201);
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Login user
    */
-  static async login(req, res, next) {
+  login: async (req, res, next) => {
     try {
       const { email, password } = req.body;
       const sessionInfo = {
@@ -33,6 +33,6 @@ class AuthController {
       next(error);
     }
   }
-}
+};
 
 module.exports = AuthController;

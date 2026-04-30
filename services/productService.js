@@ -4,14 +4,14 @@ const { NotFoundError, ForbiddenError } = require('../adapters/errorAdapter');
 /**
  * Product Service for business logic and DB operations
  */
-class ProductService {
+const ProductService = {
   /**
    * Create a new product with variants and images
    * @param {Object} productData - Data for the new product
    * @param {Array} variants - Array of product variants
    * @param {Array} images - Array of product image URLs
    */
-  static async createProduct(productData, variants = [], images = []) {
+  createProduct: async (productData, variants = [], images = []) => {
     const { products, product_variants, product_images } = await Models();
     
     const transaction = await sequelize.transaction();
@@ -29,18 +29,18 @@ class ProductService {
       }
 
       await transaction.commit();
-      return await this.getProductById(product.id);
+      return await ProductService.getProductById(product.id);
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
-  }
+  },
 
   /**
    * Get all products
    * @param {Object} filter - Optional filters
    */
-  static async getAllProducts(filter = {}) {
+  getAllProducts: async (filter = {}) => {
     const { products, product_variants, product_images, brands, categories } = await Models();
     return await products.findAll({ 
       where: filter,
@@ -51,13 +51,13 @@ class ProductService {
         { model: categories }
       ]
     });
-  }
+  },
 
   /**
    * Get product by ID
    * @param {String} id - Product ID
    */
-  static async getProductById(id) {
+  getProductById: async (id) => {
     const { products, product_variants, product_images, brands, categories } = await Models();
     const foundProduct = await products.findByPk(id, {
       include: [
@@ -71,7 +71,7 @@ class ProductService {
       throw new NotFoundError('Product not found');
     }
     return foundProduct;
-  }
+  },
 
   /**
    * Update product with variants and images
@@ -79,9 +79,9 @@ class ProductService {
    * @param {String} sellerId - Seller ID (for ownership check)
    * @param {Object} updateData - Data to update
    */
-  static async updateProduct(id, sellerId, updateData) {
+  updateProduct: async (id, sellerId, updateData) => {
     const { product_variants, product_images } = await Models();
-    const product = await this.getProductById(id);
+    const product = await ProductService.getProductById(id);
 
     if (product.seller_id !== sellerId) {
       throw new ForbiddenError('You do not have permission to update this product');
@@ -106,33 +106,33 @@ class ProductService {
       }
 
       await transaction.commit();
-      return await this.getProductById(id);
+      return await ProductService.getProductById(id);
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
-  }
+  },
 
   /**
    * Delete product
    * @param {String} id - Product ID
    * @param {String} sellerId - Seller ID (for ownership check)
    */
-  static async deleteProduct(id, sellerId) {
-    const product = await this.getProductById(id);
+  deleteProduct: async (id, sellerId) => {
+    const product = await ProductService.getProductById(id);
     if (product.seller_id !== sellerId) {
       throw new ForbiddenError('You do not have permission to delete this product');
     }
     return await product.destroy();
-  }
+  },
 
   /**
    * Get products by seller
    * @param {String} sellerId - Seller ID
    */
-  static async getProductsBySeller(sellerId) {
-    return await this.getAllProducts({ seller_id: sellerId });
+  getProductsBySeller: async (sellerId) => {
+    return await ProductService.getAllProducts({ seller_id: sellerId });
   }
-}
+};
 
 module.exports = ProductService;

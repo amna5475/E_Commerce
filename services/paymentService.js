@@ -4,12 +4,12 @@ const { NotFoundError, BadRequestError } = require('../adapters/errorAdapter');
 /**
  * Payment Service for business logic and DB operations
  */
-class PaymentService {
+const PaymentService = {
   /**
    * Initialize a new payment
    * @param {String} orderId - Order ID
    */
-  static async initializePayment(orderId) {
+  initializePayment: async (orderId) => {
     const { orders, payments } = await Models();
     
     const order = await orders.findByPk(orderId);
@@ -33,14 +33,14 @@ class PaymentService {
     });
 
     return payment;
-  }
+  },
 
   /**
    * Process payment status update
    * @param {String} transactionId - Gateway transaction ID
    * @param {String} status - New payment status
    */
-  static async processPayment(transactionId, status) {
+  processPayment: async (transactionId, status) => {
     const { payments, orders } = await Models();
 
     const payment = await payments.findOne({ where: { transaction_id: transactionId } });
@@ -65,16 +65,16 @@ class PaymentService {
     }
 
     return payment;
-  }
+  },
 
   /**
    * Get payment by order ID
    * @param {String} orderId - Order ID
    */
-  static async getPaymentByOrderId(orderId) {
+  getPaymentByOrderId: async (orderId) => {
     const { payments } = await Models();
     return await payments.findOne({ where: { order_id: orderId } });
   }
-}
+};
 
 module.exports = PaymentService;

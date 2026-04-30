@@ -4,11 +4,11 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Shipment Controller for request handling logic
  */
-class ShipmentController {
+const ShipmentController = {
   /**
    * Create a new shipment
    */
-  static async create(req, res, next) {
+  create: async (req, res, next) => {
     try {
       const { orderId } = req.body;
       const sellerId = req.user.seller_id;
@@ -17,12 +17,12 @@ class ShipmentController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Update shipment status
    */
-  static async updateStatus(req, res, next) {
+  updateStatus: async (req, res, next) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -31,12 +31,12 @@ class ShipmentController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get shipment by order ID
    */
-  static async getByOrderId(req, res, next) {
+  getByOrderId: async (req, res, next) => {
     try {
       const { orderId } = req.params;
       const shipment = await ShipmentService.getShipmentByOrderId(orderId);
@@ -44,12 +44,12 @@ class ShipmentController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get shipment events
    */
-  static async getEvents(req, res, next) {
+  getEvents: async (req, res, next) => {
     try {
       const { id } = req.params;
       const events = await ShipmentService.getShipmentEvents(id);
@@ -58,6 +58,6 @@ class ShipmentController {
       next(error);
     }
   }
-}
+};
 
 module.exports = ShipmentController;

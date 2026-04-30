@@ -4,11 +4,11 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Seller Controller for request handling logic
  */
-class SellerController {
+const SellerController = {
   /**
    * Register as a seller
    */
-  static async register(req, res, next) {
+  register: async (req, res, next) => {
     try {
       const userId = req.user.id;
       const seller = await SellerService.registerSeller(userId, req.body);
@@ -16,12 +16,12 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Approve a seller application (Admin only)
    */
-  static async approve(req, res, next) {
+  approve: async (req, res, next) => {
     try {
       const { id } = req.params;
       const seller = await SellerService.approveSeller(id);
@@ -29,12 +29,12 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Reject a seller application (Admin only)
    */
-  static async reject(req, res, next) {
+  reject: async (req, res, next) => {
     try {
       const { id } = req.params;
       const { reason } = req.body;
@@ -43,12 +43,12 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Add a sub-user/staff member (Seller only)
    */
-  static async addSubUser(req, res, next) {
+  addSubUser: async (req, res, next) => {
     try {
       const sellerId = req.user.seller_id;
       const user = await SellerService.addSubUser(sellerId, req.body);
@@ -56,12 +56,12 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all staff members for the current shop
    */
-  static async getMyStaff(req, res, next) {
+  getMyStaff: async (req, res, next) => {
     try {
       const sellerId = req.user.seller_id;
       const staff = await SellerService.getSellerStaff(sellerId);
@@ -69,12 +69,12 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get current user's seller profile
    */
-  static async getMyProfile(req, res, next) {
+  getMyProfile: async (req, res, next) => {
     try {
       const userId = req.user.id;
       const seller = await SellerService.getSellerByUserId(userId);
@@ -82,24 +82,24 @@ class SellerController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all sellers (Admin review)
    */
-  static async getAll(req, res, next) {
+  getAll: async (req, res, next) => {
     try {
       const sellers = await SellerService.getAllSellers(req.query);
       return ResponseHelper.success(res, 'Sellers list retrieved successfully', sellers);
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get seller by ID
    */
-  static async getById(req, res, next) {
+  getById: async (req, res, next) => {
     try {
       const { id } = req.params;
       const seller = await SellerService.getSellerById(id);
@@ -108,6 +108,6 @@ class SellerController {
       next(error);
     }
   }
-}
+};
 
 module.exports = SellerController;

@@ -5,13 +5,13 @@ const { BadRequestError, NotFoundError } = require('../adapters/errorAdapter');
 /**
  * Seller Service for handling seller-related business logic
  */
-class SellerService {
+const SellerService = {
   /**
    * Register a new seller application
    * @param {String} userId - User ID
    * @param {Object} sellerData - Seller registration data
    */
-  static async registerSeller(userId, sellerData) {
+  registerSeller: async (userId, sellerData) => {
     const { users, sellers } = await Models();
 
     // Check if user exists
@@ -53,13 +53,13 @@ class SellerService {
     });
 
     return seller;
-  }
+  },
 
   /**
    * Approve seller application and upgrade user role
    * @param {String} sellerId - Seller ID
    */
-  static async approveSeller(sellerId) {
+  approveSeller: async (sellerId) => {
     const { sellers, users } = await Models();
 
     const seller = await sellers.findByPk(sellerId);
@@ -73,14 +73,14 @@ class SellerService {
     await user.update({ role: 'seller' });
 
     return seller;
-  }
+  },
 
   /**
    * Reject seller application
    * @param {String} sellerId - Seller ID
    * @param {String} reason - Reason for rejection
    */
-  static async rejectSeller(sellerId, reason) {
+  rejectSeller: async (sellerId, reason) => {
     const { sellers } = await Models();
     const seller = await sellers.findByPk(sellerId);
     if (!seller) throw new NotFoundError('Seller application not found');
@@ -90,14 +90,14 @@ class SellerService {
       description: `${seller.description} (Rejected: ${reason})` 
     });
     return seller;
-  }
+  },
 
   /**
    * Add a sub-user (staff) to a shop
    * @param {String} sellerId - Seller ID
    * @param {Object} userData - Staff user data
    */
-  static async addSubUser(sellerId, userData) {
+  addSubUser: async (sellerId, userData) => {
     const { users, seller_staff } = await Models();
     
     // Check if user already exists
@@ -131,13 +131,13 @@ class SellerService {
     const userResponse = user.toJSON();
     delete userResponse.password_hash;
     return userResponse;
-  }
+  },
 
   /**
    * Get all staff for a shop
    * @param {String} sellerId - Seller ID
    */
-  static async getSellerStaff(sellerId) {
+  getSellerStaff: async (sellerId) => {
     const { users, seller_staff } = await Models();
     return await users.findAll({ 
       include: [{
@@ -147,34 +147,34 @@ class SellerService {
       }],
       attributes: { exclude: ['password_hash'] }
     });
-  }
+  },
 
   /**
    * Get all sellers (for admin review)
    */
-  static async getAllSellers(filter = {}) {
+  getAllSellers: async (filter = {}) => {
     const { sellers } = await Models();
     return await sellers.findAll({ where: filter });
-  }
+  },
 
   /**
    * Get seller profile by User ID
    * @param {String} userId - User ID
    */
-  static async getSellerByUserId(userId) {
+  getSellerByUserId: async (userId) => {
     const { sellers } = await Models();
     const seller = await sellers.findOne({ where: { user_id: userId } });
     if (!seller) {
       throw new NotFoundError('Seller profile not found');
     }
     return seller;
-  }
+  },
 
   /**
    * Get seller by ID
    * @param {String} id - Seller ID
    */
-  static async getSellerById(id) {
+  getSellerById: async (id) => {
     const { sellers } = await Models();
     const seller = await sellers.findByPk(id);
     if (!seller) {
@@ -182,6 +182,6 @@ class SellerService {
     }
     return seller;
   }
-}
+};
 
 module.exports = SellerService;

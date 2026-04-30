@@ -4,11 +4,11 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Order Controller for request handling logic
  */
-class OrderController {
+const OrderController = {
   /**
    * Place a new order
    */
-  static async placeOrder(req, res, next) {
+  placeOrder: async (req, res, next) => {
     try {
       const userId = req.user.id;
       const order = await OrderService.placeOrder(userId, req.body);
@@ -16,12 +16,12 @@ class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all orders for the current user
    */
-  static async getUserOrders(req, res, next) {
+  getUserOrders: async (req, res, next) => {
     try {
       const userId = req.user.id;
       const orders = await OrderService.getUserOrders(userId);
@@ -29,12 +29,12 @@ class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all orders for the current seller
    */
-  static async getSellerOrders(req, res, next) {
+  getSellerOrders: async (req, res, next) => {
     try {
       const sellerId = req.user.seller_id;
       const orders = await OrderService.getSellerOrders(sellerId);
@@ -42,12 +42,12 @@ class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get order by ID
    */
-  static async getOrderById(req, res, next) {
+  getOrderById: async (req, res, next) => {
     try {
       const { id } = req.params;
       const order = await OrderService.getOrderById(id);
@@ -55,12 +55,12 @@ class OrderController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Update order status
    */
-  static async updateStatus(req, res, next) {
+  updateStatus: async (req, res, next) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
@@ -70,6 +70,6 @@ class OrderController {
       next(error);
     }
   }
-}
+};
 
 module.exports = OrderController;

@@ -4,12 +4,12 @@ const config = require('config');
 const { Models } = require('../models/dbModel');
 const { BadRequestError, UnauthorizedError } = require('../adapters/errorAdapter');
 
-class AuthService {
+const AuthService = {
   /**
    * Register a new user
    * @param {Object} userData - User registration data
    */
-  static async register(userData) {
+  register: async (userData) => {
     const { users } = await Models();
     
     // Check if email already exists
@@ -38,7 +38,7 @@ class AuthService {
     delete userResponse.password_hash;
 
     return userResponse;
-  }
+  },
 
   /**
    * Login user and create session
@@ -46,7 +46,7 @@ class AuthService {
    * @param {String} password - User password
    * @param {Object} sessionInfo - Device and IP info
    */
-  static async login(email, password, sessionInfo = {}) {
+  login: async (email, password, sessionInfo = {}) => {
     const { users, user_sessions, sellers, seller_staff } = await Models();
 
     // Find user
@@ -110,6 +110,6 @@ class AuthService {
       token
     };
   }
-}
+};
 
 module.exports = AuthService;

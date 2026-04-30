@@ -4,11 +4,11 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Product Controller for request handling logic
  */
-class ProductController {
+const ProductController = {
   /**
    * Create a new product
    */
-  static async create(req, res, next) {
+  create: async (req, res, next) => {
     try {
       const { variants, images, ...productData } = req.body;
       productData.seller_id = req.user.seller_id;
@@ -17,24 +17,24 @@ class ProductController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all products
    */
-  static async getAll(req, res, next) {
+  getAll: async (req, res, next) => {
     try {
       const products = await ProductService.getAllProducts(req.query);
       return ResponseHelper.success(res, 'Products retrieved successfully', products);
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get product by ID
    */
-  static async getById(req, res, next) {
+  getById: async (req, res, next) => {
     try {
       const { id } = req.params;
       const product = await ProductService.getProductById(id);
@@ -42,12 +42,12 @@ class ProductController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Update product
    */
-  static async update(req, res, next) {
+  update: async (req, res, next) => {
     try {
       const { id } = req.params;
       const sellerId = req.user.seller_id;
@@ -56,12 +56,12 @@ class ProductController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Delete product
    */
-  static async delete(req, res, next) {
+  delete: async (req, res, next) => {
     try {
       const { id } = req.params;
       const sellerId = req.user.seller_id;
@@ -70,12 +70,12 @@ class ProductController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get my products (for sellers)
    */
-  static async getMyProducts(req, res, next) {
+  getMyProducts: async (req, res, next) => {
     try {
       const sellerId = req.user.seller_id;
       const products = await ProductService.getProductsBySeller(sellerId);
@@ -84,6 +84,6 @@ class ProductController {
       next(error);
     }
   }
-}
+};
 
 module.exports = ProductController;

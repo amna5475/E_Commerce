@@ -4,35 +4,35 @@ const ResponseHelper = require('../helpers/responseHelper');
 /**
  * Category Controller for request handling logic
  */
-class CategoryController {
+const CategoryController = {
   /**
    * Create a new category
    */
-  static async create(req, res, next) {
+  create: async (req, res, next) => {
     try {
       const category = await CategoryService.createCategory(req.body);
       return ResponseHelper.success(res, 'Category created successfully', category, 201);
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get all categories
    */
-  static async getAll(req, res, next) {
+  getAll: async (req, res, next) => {
     try {
       const categories = await CategoryService.getAllCategories(req.query);
       return ResponseHelper.success(res, 'Categories retrieved successfully', categories);
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Get category by ID
    */
-  static async getById(req, res, next) {
+  getById: async (req, res, next) => {
     try {
       const { id } = req.params;
       const category = await CategoryService.getCategoryById(id);
@@ -40,12 +40,12 @@ class CategoryController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Update category
    */
-  static async update(req, res, next) {
+  update: async (req, res, next) => {
     try {
       const { id } = req.params;
       const category = await CategoryService.updateCategory(id, req.body);
@@ -53,12 +53,12 @@ class CategoryController {
     } catch (error) {
       next(error);
     }
-  }
+  },
 
   /**
    * Delete category
    */
-  static async delete(req, res, next) {
+  delete: async (req, res, next) => {
     try {
       const { id } = req.params;
       await CategoryService.deleteCategory(id);
@@ -67,6 +67,6 @@ class CategoryController {
       next(error);
     }
   }
-}
+};
 
 module.exports = CategoryController;

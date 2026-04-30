@@ -4,13 +4,13 @@ const { NotFoundError, BadRequestError } = require('../adapters/errorAdapter');
 /**
  * Order Service for business logic and DB operations
  */
-class OrderService {
+const OrderService = {
   /**
    * Place an order
    * @param {String} userId - User ID
    * @param {Object} orderData - Order data (address_id, payment_method, notes, items)
    */
-  static async placeOrder(userId, orderData) {
+  placeOrder: async (userId, orderData) => {
     const { orders, order_items, product_variants, products } = await Models();
     const { items } = orderData;
     
@@ -71,18 +71,18 @@ class OrderService {
       await order_items.bulkCreate(orderItemsWithOrderId, { transaction });
 
       await transaction.commit();
-      return await this.getOrderById(order.id);
+      return await OrderService.getOrderById(order.id);
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
-  }
+  },
 
   /**
    * Get order by ID
    * @param {String} id - Order ID
    */
-  static async getOrderById(id) {
+  getOrderById: async (id) => {
     const { orders, order_items, product_variants, products } = await Models();
     const order = await orders.findByPk(id, {
       include: [{
@@ -97,22 +97,22 @@ class OrderService {
       throw new NotFoundError('Order not found');
     }
     return order;
-  }
+  },
 
   /**
    * Get all orders for a user
    * @param {String} userId - User ID
    */
-  static async getUserOrders(userId) {
+  getUserOrders: async (userId) => {
     const { orders } = await Models();
     return await orders.findAll({ where: { user_id: userId } });
-  }
+  },
 
   /**
    * Get all orders for a seller
    * @param {String} sellerId - Seller ID
    */
-  static async getSellerOrders(sellerId) {
+  getSellerOrders: async (sellerId) => {
     const { order_items, orders } = await Models();
     return await orders.findAll({
       include: [{
@@ -120,17 +120,17 @@ class OrderService {
         where: { seller_id: sellerId }
       }]
     });
-  }
+  },
 
   /**
    * Update order status
    * @param {String} id - Order ID
    * @param {String} status - New status
    */
-  static async updateOrderStatus(id, status) {
-    const order = await this.getOrderById(id);
+  updateOrderStatus: async (id, status) => {
+    const order = await OrderService.getOrderById(id);
     return await order.update({ status });
   }
-}
+};
 
 module.exports = OrderService;
