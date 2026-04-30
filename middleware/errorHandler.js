@@ -1,4 +1,3 @@
-const { ApiError } = require('../adapters/errorAdapter');
 const ResponseHelper = require('../helpers/responseHelper');
 
 /**
@@ -7,7 +6,8 @@ const ResponseHelper = require('../helpers/responseHelper');
 const errorHandler = (err, req, res, next) => {
   console.error(err);
 
-  if (err instanceof ApiError) {
+  // If the error has a statusCode property, it's one of our custom errors
+  if (err.statusCode) {
     return ResponseHelper.error(res, err.message, err.statusCode, err.errors);
   }
 

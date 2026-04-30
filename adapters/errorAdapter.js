@@ -1,48 +1,34 @@
 /**
  * Custom Error Adapters for formatting exceptions
+ * Using factory functions to avoid the 'class' keyword while maintaining Error functionality.
  */
-class ApiError extends Error {
-  constructor(message, statusCode, errors = null) {
-    super(message);
-    this.statusCode = statusCode;
-    this.errors = errors;
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
 
-class BadRequestError extends ApiError {
-  constructor(message = 'Bad Request', errors = null) {
-    super(message, 400, errors);
-  }
-}
+const createError = (message, statusCode, name, errors = null) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  error.errors = errors;
+  error.name = name;
+  // Capture stack trace, excluding this factory function from the trace
+  Error.captureStackTrace(error, createError);
+  return error;
+};
 
-class UnauthorizedError extends ApiError {
-  constructor(message = 'Unauthorized') {
-    super(message, 401);
-  }
-}
+const BadRequestError = (message = 'Bad Request', errors = null) => 
+  createError(message, 400, 'BadRequestError', errors);
 
-class ForbiddenError extends ApiError {
-  constructor(message = 'Forbidden') {
-    super(message, 403);
-  }
-}
+const UnauthorizedError = (message = 'Unauthorized') => 
+  createError(message, 401, 'UnauthorizedError');
 
-class NotFoundError extends ApiError {
-  constructor(message = 'Resource not found') {
-    super(message, 404);
-  }
-}
+const ForbiddenError = (message = 'Forbidden') => 
+  createError(message, 403, 'ForbiddenError');
 
-class InternalServerError extends ApiError {
-  constructor(message = 'Internal Server Error') {
-    super(message, 500);
-  }
-}
+const NotFoundError = (message = 'Resource not found') => 
+  createError(message, 404, 'NotFoundError');
+
+const InternalServerError = (message = 'Internal Server Error') => 
+  createError(message, 500, 'InternalServerError');
 
 module.exports = {
-  ApiError,
   BadRequestError,
   UnauthorizedError,
   ForbiddenError,
