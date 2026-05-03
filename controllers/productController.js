@@ -83,6 +83,34 @@ const ProductController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  /**
+   * Ask a question about a product
+   */
+  askQuestion: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { question } = req.body;
+      const result = await ProductService.askQuestion(id, req.user.id, question);
+      return ResponseHelper.success(res, 'Question submitted successfully', result, 201);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Answer a product question
+   */
+  answerQuestion: async (req, res, next) => {
+    try {
+      const { questionId } = req.params;
+      const { answer } = req.body;
+      const result = await ProductService.answerQuestion(questionId, req.user.id, answer);
+      return ResponseHelper.success(res, 'Answer submitted successfully', result);
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

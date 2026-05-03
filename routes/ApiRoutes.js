@@ -10,6 +10,8 @@ const OrderController = require('../controllers/orderController');
 const PaymentController = require('../controllers/paymentController');
 const ShipmentController = require('../controllers/shipmentController');
 const SellerController = require('../controllers/sellerController');
+const WalletController = require('../controllers/walletController');
+const CampaignController = require('../controllers/campaignController');
 
 // Middleware
 const validate = require('../middleware/validation');
@@ -75,6 +77,8 @@ router.post('/products', authMiddleware, authorize(['admin', 'seller']), validat
 router.get('/products', ProductController.getAll);
 router.get('/products/my-products', authMiddleware, authorize(['seller', 'seller_staff']), ProductController.getMyProducts);
 router.get('/products/:id', ProductController.getById);
+router.post('/products/:id/ask', authMiddleware, ProductController.askQuestion);
+router.post('/products/questions/:questionId/answer', authMiddleware, authorize(['seller', 'seller_staff']), ProductController.answerQuestion);
 router.put('/products/:id', authMiddleware, authorize(['seller', 'admin', 'seller_staff']), ProductController.update);
 router.delete('/products/:id', authMiddleware, authorize(['seller', 'admin']), ProductController.delete);
 
@@ -128,8 +132,24 @@ router.get('/sellers', authMiddleware, authorize(['admin']), SellerController.ge
 router.get('/sellers/my-profile', authMiddleware, authorize(['seller', 'seller_staff']), SellerController.getMyProfile);
 router.get('/sellers/my-staff', authMiddleware, authorize(['seller']), SellerController.getMyStaff);
 router.post('/sellers/sub-users', authMiddleware, authorize(['seller']), validate(staffRegisterRules), SellerController.addSubUser);
+router.post('/sellers/:id/follow', authMiddleware, SellerController.follow);
+router.delete('/sellers/:id/follow', authMiddleware, SellerController.unfollow);
 router.get('/sellers/:id', SellerController.getById);
 router.put('/sellers/:id/approve', authMiddleware, authorize(['admin']), SellerController.approve);
 router.put('/sellers/:id/reject', authMiddleware, authorize(['admin']), SellerController.reject);
+
+/**
+ * Wallet Routes
+ */
+router.get('/wallet/me', authMiddleware, WalletController.getMine);
+router.get('/wallet/transactions', authMiddleware, WalletController.getTransactions);
+
+/**
+ * Campaign Routes
+ */
+router.post('/campaigns', authMiddleware, authorize(['admin']), CampaignController.create);
+router.post('/campaigns/:id/products', authMiddleware, authorize(['admin']), CampaignController.addProducts);
+router.get('/campaigns/active', CampaignController.getActive);
+router.get('/campaigns/:slug', CampaignController.getBySlug);
 
 module.exports = router;

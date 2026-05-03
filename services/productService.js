@@ -132,6 +132,33 @@ const ProductService = {
    */
   getProductsBySeller: async (sellerId) => {
     return await ProductService.getAllProducts({ seller_id: sellerId });
+  },
+
+  /**
+   * Ask a question about a product
+   */
+  askQuestion: async (productId, userId, question) => {
+    const { product_questions } = await Models();
+    return await product_questions.create({
+      product_id: productId,
+      user_id: userId,
+      question
+    });
+  },
+
+  /**
+   * Answer a product question
+   */
+  answerQuestion: async (questionId, sellerUserId, answer) => {
+    const { product_questions } = await Models();
+    const question = await product_questions.findByPk(questionId);
+    if (!question) throw new NotFoundError('Question not found');
+    
+    return await question.update({
+      answer,
+      answered_by: sellerUserId,
+      answered_at: new Date()
+    });
   }
 };
 

@@ -107,6 +107,32 @@ const SellerController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  /**
+   * Follow a shop
+   */
+  follow: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const result = await SellerService.followShop(id, req.user.id);
+      return ResponseHelper.success(res, 'Shop followed successfully', result, 201);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
+   * Unfollow a shop
+   */
+  unfollow: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await SellerService.unfollowShop(id, req.user.id);
+      return ResponseHelper.success(res, 'Shop unfollowed successfully');
+    } catch (error) {
+      next(error);
+    }
   }
 };
 

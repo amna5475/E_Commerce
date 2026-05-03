@@ -181,6 +181,30 @@ const SellerService = {
       throw new NotFoundError('Seller not found');
     }
     return seller;
+  },
+
+  /**
+   * Follow a shop
+   */
+  followShop: async (sellerId, userId) => {
+    const { shop_followers } = await Models();
+    const existing = await shop_followers.findOne({ where: { seller_id: sellerId, user_id: userId } });
+    if (existing) throw new BadRequestError('Already following this shop');
+    
+    return await shop_followers.create({
+      seller_id: sellerId,
+      user_id: userId
+    });
+  },
+
+  /**
+   * Unfollow a shop
+   */
+  unfollowShop: async (sellerId, userId) => {
+    const { shop_followers } = await Models();
+    const follower = await shop_followers.findOne({ where: { seller_id: sellerId, user_id: userId } });
+    if (!follower) throw new NotFoundError('Follow record not found');
+    return await follower.destroy();
   }
 };
 
