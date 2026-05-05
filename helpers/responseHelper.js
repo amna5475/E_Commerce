@@ -11,7 +11,6 @@ const ResponseHelper = {
    */
   success: (res, message, data = null, statusCode = 200) => {
     return res.status(statusCode).json({
-      success: true,
       statusCode,
       message,
       data
@@ -27,7 +26,6 @@ const ResponseHelper = {
    */
   error: (res, message, statusCode = 500, errors = null) => {
     return res.status(statusCode).json({
-      success: false,
       statusCode,
       message,
       errors
