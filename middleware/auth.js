@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return next(new UnauthorizedError('Access token is missing or invalid'));
+    return next(UnauthorizedError('Access token is missing or invalid'));
   }
 
   const token = authHeader.split(' ')[1];
@@ -20,9 +20,9 @@ const authMiddleware = (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return next(new UnauthorizedError('Access token has expired'));
+      return next(UnauthorizedError('Access token has expired'));
     }
-    return next(new UnauthorizedError('Invalid access token'));
+    return next(UnauthorizedError('Invalid access token'));
   }
 };
 
@@ -33,7 +33,7 @@ const authMiddleware = (req, res, next) => {
 const authorize = (roles = []) => {
   return (req, res, next) => {
     if (roles.length && !roles.includes(req.user.role)) {
-      return next(new ForbiddenError('You do not have permission to access this resource'));
+      return next(ForbiddenError('You do not have permission to access this resource'));
     }
     next();
   };

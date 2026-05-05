@@ -60,7 +60,8 @@ const SellerService = {
    * @param {String} sellerId - Seller ID
    */
   approveSeller: async (sellerId) => {
-    const { sellers, users } = await Models();
+    const models = await Models();
+    const { sellers, users } = models;
 
     const seller = await sellers.findByPk(sellerId);
     if (!seller) throw new NotFoundError('Seller application not found');
