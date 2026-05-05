@@ -28,7 +28,7 @@ const registerRules = {
   email: 'required|email',
   password: 'required|string|min:6',
   phone: 'required|string',
-  role: 'string|in:customer,seller,seller_staff'
+  role: 'string|in:customer,seller,seller_staff,admin'
 };
 
 const loginRules = {
@@ -72,11 +72,87 @@ router.get('/health', (req, res) => {
 /**
  * Auth Routes
  */
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [full_name, email, password, phone]
+ *             properties:
+ *               full_name: { type: string }
+ *               email: { type: string }
+ *               password: { type: string }
+ *               phone: { type: string }
+ *               role: { type: string, enum: [customer, seller] }
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ */
 router.post('/auth/register', validate(registerRules), AuthController.register);
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email: { type: string }
+ *               password: { type: string }
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
 router.post('/auth/login', validate(loginRules), AuthController.login);
 
 /**
  * Product Routes
+ */
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ *   post:
+ *     summary: Create a new product (Seller/Admin)
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title, base_price, category_id, brand_id]
+ *             properties:
+ *               title: { type: string }
+ *               base_price: { type: number }
+ *               category_id: { type: string }
+ *               brand_id: { type: string }
+ *     responses:
+ *       201:
+ *         description: Product created
  */
 router.post('/products', authMiddleware, authorize(['admin', 'seller']), validate(productRules), ProductController.create);
 router.get('/products', ProductController.getAll);
