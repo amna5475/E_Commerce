@@ -4,7 +4,11 @@ const apiRoutes = require('./ApiRoutes');
 
 /* Root Route */
 router.get('/', (req, res) => {
-  res.render('index', { title: 'E-commerce API' });
+  res.json({ 
+    message: 'Welcome to the E-commerce Marketplace API',
+    documentation: '/api-docs',
+    status: 'Running'
+  });
 });
 
 /* API Routes */
