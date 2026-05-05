@@ -13,7 +13,7 @@ const validate = (rules, messages = {}) => {
 
     if (validation.fails()) {
       const errors = validation.errors.all();
-      return next(new BadRequestError('Validation failed', errors));
+      return next(BadRequestError('Validation failed', errors));
     }
 
     next();
