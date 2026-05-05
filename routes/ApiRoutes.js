@@ -12,6 +12,11 @@ const ShipmentController = require('../controllers/shipmentController');
 const SellerController = require('../controllers/sellerController');
 const WalletController = require('../controllers/walletController');
 const CampaignController = require('../controllers/campaignController');
+const ReviewController = require('../controllers/reviewController');
+const NotificationController = require('../controllers/notificationController');
+const ReturnController = require('../controllers/returnController');
+const VoucherController = require('../controllers/voucherController');
+const SettlementController = require('../controllers/settlementController');
 
 // Middleware
 const validate = require('../middleware/validation');
@@ -151,5 +156,35 @@ router.post('/campaigns', authMiddleware, authorize(['admin']), CampaignControll
 router.post('/campaigns/:id/products', authMiddleware, authorize(['admin']), CampaignController.addProducts);
 router.get('/campaigns/active', CampaignController.getActive);
 router.get('/campaigns/:slug', CampaignController.getBySlug);
+
+/**
+ * Review Routes
+ */
+router.post('/reviews', authMiddleware, ReviewController.create);
+router.get('/reviews/product/:productId', ReviewController.getProductReviews);
+
+/**
+ * Notification Routes
+ */
+router.get('/notifications/me', authMiddleware, NotificationController.getMine);
+router.put('/notifications/:id/read', authMiddleware, NotificationController.read);
+
+/**
+ * Return Routes
+ */
+router.post('/returns', authMiddleware, ReturnController.create);
+router.put('/returns/:id/process', authMiddleware, authorize(['admin', 'seller']), ReturnController.process);
+
+/**
+ * Voucher Routes
+ */
+router.post('/vouchers', authMiddleware, authorize(['admin', 'seller']), VoucherController.create);
+router.post('/vouchers/validate', authMiddleware, VoucherController.validate);
+
+/**
+ * Settlement Routes
+ */
+router.get('/settlements/me', authMiddleware, authorize(['seller']), SettlementController.getMine);
+router.post('/settlements', authMiddleware, authorize(['admin']), SettlementController.create);
 
 module.exports = router;
