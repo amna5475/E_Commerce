@@ -33,7 +33,7 @@ const CategoryService = {
         include: [{ model: categories, as: 'SubCategories' }]
     });
     if (!foundCategory) {
-      throw new NotFoundError('Category not found');
+      throw NotFoundError('Category not found');
     }
     return foundCategory;
   },

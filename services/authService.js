@@ -15,7 +15,7 @@ const AuthService = {
     // Check if email already exists
     const existingUser = await users.findOne({ where: { email: userData.email } });
     if (existingUser) {
-      throw new BadRequestError('Email is already registered');
+      throw BadRequestError('Email is already registered');
     }
 
     // Hash password
@@ -47,68 +47,75 @@ const AuthService = {
    * @param {Object} sessionInfo - Device and IP info
    */
   login: async (email, password, sessionInfo = {}) => {
-    const { users, user_sessions, sellers, seller_staff } = await Models();
+    try {
+      const { users, user_sessions, sellers, seller_staff } = await Models();
 
-    // Find user
-    const user = await users.findOne({ where: { email } });
-    if (!user) {
-      throw new UnauthorizedError('Invalid email or password');
-    }
-
-    // Check if active
-    if (!user.is_active) {
-      throw new UnauthorizedError('Your account has been deactivated');
-    }
-
-    // Verify password
-    const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) {
-      throw new UnauthorizedError('Invalid email or password');
-    }
-
-    // Generate JWT payload
-    const payload = { id: user.id, role: user.role, email: user.email };
-    
-    // Include seller_id if role is seller (owner) or has entries in seller_staff
-    if (user.role === 'seller') {
-      const seller = await sellers.findOne({ where: { user_id: user.id } });
-      if (seller) payload.seller_id = seller.id;
-    } else {
-      const staffRecord = await seller_staff.findOne({ where: { user_id: user.id, is_active: true } });
-      if (staffRecord) {
-        payload.seller_id = staffRecord.seller_id;
-        payload.role = 'seller_staff'; // Upgrade role for token context
+      // Find user
+      const user = await users.findOne({ where: { email } });
+      if (!user) {
+        throw UnauthorizedError('Invalid email or password');
       }
+
+      // Check if active
+      if (!user.is_active) {
+        throw UnauthorizedError('Your account has been deactivated');
+      }
+
+      // Verify password
+      const isMatch = await bcrypt.compare(password, user.password_hash);
+      if (!isMatch) {
+        throw UnauthorizedError('Invalid email or password');
+      }
+
+      // Generate JWT payload
+      const payload = { id: user.id, role: user.role, email: user.email };
+      
+      // Include seller_id if role is seller (owner) or has entries in seller_staff
+      if (user.role === 'seller') {
+        const seller = await sellers.findOne({ where: { user_id: user.id } });
+        if (seller) payload.seller_id = seller.id;
+      } else {
+        const staffRecord = await seller_staff.findOne({ where: { user_id: user.id, is_active: true } });
+        if (staffRecord) {
+          payload.seller_id = staffRecord.seller_id;
+          payload.role = 'seller_staff'; // Upgrade role for token context
+        }
+      }
+
+      const token = jwt.sign(
+        payload,
+        config.get('app.jwt_secret'),
+        { expiresIn: config.get('app.jwt_expiration') }
+      );
+
+      // Create session record
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 24);
+
+      await user_sessions.create({
+        user_id: user.id,
+        token,
+        device_info: sessionInfo.device_info,
+        ip_address: sessionInfo.ip_address,
+        expires_at: expiresAt
+      });
+
+      return {
+        user: {
+          id: user.id,
+          full_name: user.full_name,
+          email: user.email,
+          role: payload.role, // Use role from payload
+          seller_id: payload.seller_id
+        },
+        token
+      };
+    } catch (error) {
+      // Re-throw custom errors
+      if (error.statusCode) throw error;
+      // Convert other errors to readable ones for debugging
+      throw BadRequestError(`Login failed: ${error.message}`);
     }
-
-    const token = jwt.sign(
-      payload,
-      config.get('app.jwt_secret'),
-      { expiresIn: config.get('app.jwt_expiration') }
-    );
-
-    // Create session record
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24);
-
-    await user_sessions.create({
-      user_id: user.id,
-      token,
-      device_info: sessionInfo.device_info,
-      ip_address: sessionInfo.ip_address,
-      expires_at: expiresAt
-    });
-
-    return {
-      user: {
-        id: user.id,
-        full_name: user.full_name,
-        email: user.email,
-        role: payload.role, // Use role from payload
-        seller_id: payload.seller_id
-      },
-      token
-    };
   }
 };
 

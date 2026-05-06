@@ -14,11 +14,11 @@ const PaymentService = {
     
     const order = await orders.findByPk(orderId);
     if (!order) {
-      throw new NotFoundError('Order not found');
+      throw NotFoundError('Order not found');
     }
 
     if (order.payment_status === 'paid') {
-      throw new BadRequestError('Order is already paid');
+      throw BadRequestError('Order is already paid');
     }
 
     const payment = await payments.create({
@@ -45,7 +45,7 @@ const PaymentService = {
 
     const payment = await payments.findOne({ where: { transaction_id: transactionId } });
     if (!payment) {
-      throw new NotFoundError('Payment record not found');
+      throw NotFoundError('Payment record not found');
     }
 
     const order = await orders.findByPk(payment.order_id);

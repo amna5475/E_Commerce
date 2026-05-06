@@ -68,7 +68,7 @@ const ProductService = {
       ]
     });
     if (!foundProduct) {
-      throw new NotFoundError('Product not found');
+      throw NotFoundError('Product not found');
     }
     return foundProduct;
   },
@@ -84,7 +84,7 @@ const ProductService = {
     const product = await ProductService.getProductById(id);
 
     if (product.seller_id !== sellerId) {
-      throw new ForbiddenError('You do not have permission to update this product');
+      throw ForbiddenError('You do not have permission to update this product');
     }
 
     const transaction = await sequelize.transaction();
@@ -121,7 +121,7 @@ const ProductService = {
   deleteProduct: async (id, sellerId) => {
     const product = await ProductService.getProductById(id);
     if (product.seller_id !== sellerId) {
-      throw new ForbiddenError('You do not have permission to delete this product');
+      throw ForbiddenError('You do not have permission to delete this product');
     }
     return await product.destroy();
   },
@@ -152,7 +152,7 @@ const ProductService = {
   answerQuestion: async (questionId, sellerUserId, answer) => {
     const { product_questions } = await Models();
     const question = await product_questions.findByPk(questionId);
-    if (!question) throw new NotFoundError('Question not found');
+    if (!question) throw NotFoundError('Question not found');
     
     return await question.update({
       answer,

@@ -31,7 +31,7 @@ const BrandService = {
     const { brands } = await Models();
     const foundBrand = await brands.findByPk(id);
     if (!foundBrand) {
-      throw new NotFoundError('Brand not found');
+      throw NotFoundError('Brand not found');
     }
     return foundBrand;
   },

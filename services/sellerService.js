@@ -17,19 +17,19 @@ const SellerService = {
     // Check if user exists
     const user = await users.findByPk(userId);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw NotFoundError('User not found');
     }
 
     // Check if user is already a seller or has a pending application
     const existingSeller = await sellers.findOne({ where: { user_id: userId } });
     if (existingSeller) {
-      throw new BadRequestError('User already has a seller profile or pending application');
+      throw BadRequestError('User already has a seller profile or pending application');
     }
 
     // Check if shop name is unique
     const existingShop = await sellers.findOne({ where: { shop_name: sellerData.shop_name } });
     if (existingShop) {
-      throw new BadRequestError('Shop name is already taken');
+      throw BadRequestError('Shop name is already taken');
     }
 
     // Create shop slug
@@ -64,11 +64,11 @@ const SellerService = {
     const { sellers, users } = models;
 
     const seller = await sellers.findByPk(sellerId);
-    if (!seller) throw new NotFoundError('Seller application not found');
-    if (seller.status === 'approved') throw new BadRequestError('Seller is already approved');
+    if (!seller) throw NotFoundError('Seller application not found');
+    if (seller.status === 'approved') throw BadRequestError('Seller is already approved');
 
     const user = await users.findByPk(seller.user_id);
-    if (!user) throw new NotFoundError('Associated user not found');
+    if (!user) throw NotFoundError('Associated user not found');
 
     await seller.update({ status: 'approved', approved_at: new Date() });
     await user.update({ role: 'seller' });
@@ -84,7 +84,7 @@ const SellerService = {
   rejectSeller: async (sellerId, reason) => {
     const { sellers } = await Models();
     const seller = await sellers.findByPk(sellerId);
-    if (!seller) throw new NotFoundError('Seller application not found');
+    if (!seller) throw NotFoundError('Seller application not found');
 
     await seller.update({ 
       status: 'rejected', 
@@ -120,7 +120,7 @@ const SellerService = {
 
     // Check if already staff for this shop
     const existingStaff = await seller_staff.findOne({ where: { user_id: user.id, seller_id: sellerId } });
-    if (existingStaff) throw new BadRequestError('User is already a staff member of this shop');
+    if (existingStaff) throw BadRequestError('User is already a staff member of this shop');
 
     // Link user to shop in junction table
     await seller_staff.create({
@@ -166,7 +166,7 @@ const SellerService = {
     const { sellers } = await Models();
     const seller = await sellers.findOne({ where: { user_id: userId } });
     if (!seller) {
-      throw new NotFoundError('Seller profile not found');
+      throw NotFoundError('Seller profile not found');
     }
     return seller;
   },
@@ -179,7 +179,7 @@ const SellerService = {
     const { sellers } = await Models();
     const seller = await sellers.findByPk(id);
     if (!seller) {
-      throw new NotFoundError('Seller not found');
+      throw NotFoundError('Seller not found');
     }
     return seller;
   },
@@ -190,7 +190,7 @@ const SellerService = {
   followShop: async (sellerId, userId) => {
     const { shop_followers } = await Models();
     const existing = await shop_followers.findOne({ where: { seller_id: sellerId, user_id: userId } });
-    if (existing) throw new BadRequestError('Already following this shop');
+    if (existing) throw BadRequestError('Already following this shop');
     
     return await shop_followers.create({
       seller_id: sellerId,
@@ -204,7 +204,7 @@ const SellerService = {
   unfollowShop: async (sellerId, userId) => {
     const { shop_followers } = await Models();
     const follower = await shop_followers.findOne({ where: { seller_id: sellerId, user_id: userId } });
-    if (!follower) throw new NotFoundError('Follow record not found');
+    if (!follower) throw NotFoundError('Follow record not found');
     return await follower.destroy();
   }
 };

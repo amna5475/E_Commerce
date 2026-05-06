@@ -20,6 +20,11 @@ const errorHandler = (err, req, res, next) => {
     return ResponseHelper.error(res, 'Validation Error', 400, errors);
   }
 
+  // Handle Sequelize Database errors (e.g., invalid UUID format)
+  if (err.name === 'SequelizeDatabaseError' && err.message.includes('invalid input syntax for type uuid')) {
+    return ResponseHelper.error(res, 'Invalid ID format provided', 400);
+  }
+
   // Default to internal server error
   return ResponseHelper.error(res, 'Internal Server Error', 500);
 };

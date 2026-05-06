@@ -15,7 +15,7 @@ const ShipmentService = {
     
     const order = await orders.findByPk(orderId);
     if (!order) {
-      throw new NotFoundError('Order not found');
+      throw NotFoundError('Order not found');
     }
 
     return await shipments.create({
@@ -38,7 +38,7 @@ const ShipmentService = {
 
     const shipment = await shipments.findByPk(id);
     if (!shipment) {
-      throw new NotFoundError('Shipment record not found');
+      throw NotFoundError('Shipment record not found');
     }
 
     const updateData = { status };

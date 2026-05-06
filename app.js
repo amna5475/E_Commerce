@@ -32,7 +32,7 @@ app.use('/', routes);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-  next(new NotFoundError('The requested resource was not found'));
+  next(NotFoundError('The requested resource was not found'));
 });
 
 // Global Error Handler

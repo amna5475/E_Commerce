@@ -50,7 +50,7 @@ const CampaignService = {
       where: { slug },
       include: [{ model: products }]
     });
-    if (!campaign) throw new NotFoundError('Campaign not found');
+    if (!campaign) throw NotFoundError('Campaign not found');
     return campaign;
   }
 };

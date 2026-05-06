@@ -20,13 +20,13 @@ const VoucherService = {
     const { vouchers } = await Models();
     const voucher = await vouchers.findOne({ where: { code, is_active: true } });
     
-    if (!voucher) throw new NotFoundError('Invalid or expired voucher code');
+    if (!voucher) throw NotFoundError('Invalid or expired voucher code');
     
     const now = new Date();
-    if (voucher.valid_from && now < voucher.valid_from) throw new BadRequestError('Voucher is not yet active');
-    if (voucher.valid_until && now > voucher.valid_until) throw new BadRequestError('Voucher has expired');
-    if (voucher.usage_limit && voucher.used_count >= voucher.usage_limit) throw new BadRequestError('Voucher usage limit reached');
-    if (voucher.min_order_value && orderValue < voucher.min_order_value) throw new BadRequestError(`Minimum order value of ${voucher.min_order_value} required`);
+    if (voucher.valid_from && now < voucher.valid_from) throw BadRequestError('Voucher is not yet active');
+    if (voucher.valid_until && now > voucher.valid_until) throw BadRequestError('Voucher has expired');
+    if (voucher.usage_limit && voucher.used_count >= voucher.usage_limit) throw BadRequestError('Voucher usage limit reached');
+    if (voucher.min_order_value && orderValue < voucher.min_order_value) throw BadRequestError(`Minimum order value of ${voucher.min_order_value} required`);
 
     return voucher;
   }

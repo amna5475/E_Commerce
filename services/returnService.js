@@ -17,7 +17,7 @@ const ReturnService = {
       include: [{ model: orders, where: { user_id: userId } }]
     });
 
-    if (!orderItem) throw new BadRequestError('Invalid order item for return');
+    if (!orderItem) throw BadRequestError('Invalid order item for return');
 
     return await returns.create({
       order_id: returnData.order_id,
@@ -36,7 +36,7 @@ const ReturnService = {
   processReturn: async (returnId, status, resolution, refundAmount = 0) => {
     const { returns } = await Models();
     const returnRecord = await returns.findByPk(returnId);
-    if (!returnRecord) throw new NotFoundError('Return request not found');
+    if (!returnRecord) throw NotFoundError('Return request not found');
 
     return await returnRecord.update({
       status,

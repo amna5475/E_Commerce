@@ -15,7 +15,7 @@ const OrderService = {
     const { items } = orderData;
     
     if (!items || items.length === 0) {
-      throw new BadRequestError('Order items are required');
+      throw BadRequestError('Order items are required');
     }
 
     const transaction = await sequelize.transaction();
@@ -26,7 +26,7 @@ const OrderService = {
       for (const item of items) {
         const variant = await product_variants.findByPk(item.variant_id, { transaction });
         if (!variant || variant.stock_qty < item.quantity) {
-          throw new BadRequestError(`Insufficient stock for product variant ${item.variant_id}`);
+          throw BadRequestError(`Insufficient stock for product variant ${item.variant_id}`);
         }
 
         const product = await products.findByPk(variant.product_id, { transaction });
@@ -94,7 +94,7 @@ const OrderService = {
       }]
     });
     if (!order) {
-      throw new NotFoundError('Order not found');
+      throw NotFoundError('Order not found');
     }
     return order;
   },

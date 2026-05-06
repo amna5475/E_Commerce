@@ -56,8 +56,8 @@ exports.Models = async () => {
     models.user_sessions = await sequelize.define('user_sessions', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       user_id: { type: Sequelize.UUID, allowNull: false },
-      token: { type: Sequelize.STRING, unique: true },
-      device_info: { type: Sequelize.STRING },
+      token: { type: Sequelize.TEXT, unique: true },
+      device_info: { type: Sequelize.TEXT },
       ip_address: { type: Sequelize.STRING },
       expires_at: { type: Sequelize.DATE },
       created_at: { type: Sequelize.DATE }
@@ -89,14 +89,14 @@ exports.Models = async () => {
       user_id: { type: Sequelize.UUID, allowNull: false },
       shop_name: { type: Sequelize.STRING, unique: true },
       shop_slug: { type: Sequelize.STRING, unique: true },
-      description: { type: Sequelize.STRING },
-      logo_url: { type: Sequelize.STRING },
+      description: { type: Sequelize.TEXT },
+      logo_url: { type: Sequelize.TEXT },
       ntn_number: { type: Sequelize.STRING },
       bank_name: { type: Sequelize.STRING },
       bank_account: { type: Sequelize.STRING },
       bank_iban: { type: Sequelize.STRING },
-      ntn_doc_url: { type: Sequelize.STRING },
-      id_card_doc_url: { type: Sequelize.STRING },
+      ntn_doc_url: { type: Sequelize.TEXT },
+      id_card_doc_url: { type: Sequelize.TEXT },
       rating: { type: Sequelize.FLOAT, defaultValue: 0 },
       status: { type: Sequelize.STRING },
       approved_at: { type: Sequelize.DATE }
@@ -168,7 +168,7 @@ exports.Models = async () => {
     models.product_images = await sequelize.define('product_images', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       product_id: { type: Sequelize.UUID, allowNull: false },
-      url: { type: Sequelize.STRING },
+      url: { type: Sequelize.TEXT },
       is_primary: { type: Sequelize.BOOLEAN, defaultValue: false },
       sort_order: { type: Sequelize.INTEGER }
     }, { timestamps: false });
@@ -197,7 +197,7 @@ exports.Models = async () => {
       price: { type: Sequelize.FLOAT },
       stock_qty: { type: Sequelize.INTEGER, defaultValue: 0 },
       reserved_qty: { type: Sequelize.INTEGER, defaultValue: 0 },
-      image_url: { type: Sequelize.STRING }, // Variant specific image
+      image_url: { type: Sequelize.TEXT }, // Variant specific image
       is_active: { type: Sequelize.BOOLEAN, defaultValue: true },
       status: { type: Sequelize.STRING }
     }, { timestamps: false });
@@ -317,7 +317,7 @@ exports.Models = async () => {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       title: { type: Sequelize.STRING, allowNull: false },
       slug: { type: Sequelize.STRING, unique: true },
-      banner_url: { type: Sequelize.STRING },
+      banner_url: { type: Sequelize.TEXT },
       is_active: { type: Sequelize.BOOLEAN, defaultValue: true },
       start_date: { type: Sequelize.DATE },
       end_date: { type: Sequelize.DATE }
@@ -468,7 +468,7 @@ exports.Models = async () => {
     models.review_images = await sequelize.define('review_images', {
       id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
       review_id: { type: Sequelize.UUID, allowNull: false },
-      url: { type: Sequelize.STRING }
+      url: { type: Sequelize.TEXT }
     }, { timestamps: false });
 
     /**
