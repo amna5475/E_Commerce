@@ -135,6 +135,23 @@ const ProductService = {
   },
 
   /**
+   * Get all public questions (and answers) for a product
+   * @param {String} productId - Product ID
+   */
+  getProductQuestions: async (productId) => {
+    const { product_questions, users } = await Models();
+    await ProductService.getProductById(productId); // ensure product exists
+    return await product_questions.findAll({
+      where: { product_id: productId, is_public: true },
+      include: [{
+        model: users,
+        attributes: ['id', 'full_name']
+      }],
+      order: [['created_at', 'DESC']]
+    });
+  },
+
+  /**
    * Ask a question about a product
    */
   askQuestion: async (productId, userId, question) => {

@@ -17,6 +17,10 @@ const NotificationController = require('../controllers/notificationController');
 const ReturnController = require('../controllers/returnController');
 const VoucherController = require('../controllers/voucherController');
 const SettlementController = require('../controllers/settlementController');
+const AddressController = require('../controllers/addressController');
+const WishlistController = require('../controllers/wishlistController');
+const InventoryController = require('../controllers/inventoryController');
+const AdminLogController = require('../controllers/adminLogController');
 
 // Middleware
 const validate = require('../middleware/validation');
@@ -39,7 +43,6 @@ const loginRules = {
 const productRules = {
   title: 'required|string',
   base_price: 'required|numeric',
-  seller_id: 'required|string',
   category_id: 'required|string',
   brand_id: 'required|string'
 };
@@ -158,6 +161,7 @@ router.post('/products', authMiddleware, authorize(['admin', 'seller']), validat
 router.get('/products', ProductController.getAll);
 router.get('/products/my-products', authMiddleware, authorize(['seller', 'seller_staff']), ProductController.getMyProducts);
 router.get('/products/:id', ProductController.getById);
+router.get('/products/:id/questions', ProductController.getQuestions);
 router.post('/products/:id/ask', authMiddleware, ProductController.askQuestion);
 router.post('/products/questions/:questionId/answer', authMiddleware, authorize(['seller', 'seller_staff']), ProductController.answerQuestion);
 router.put('/products/:id', authMiddleware, authorize(['seller', 'admin', 'seller_staff']), ProductController.update);
@@ -262,5 +266,45 @@ router.post('/vouchers/validate', authMiddleware, VoucherController.validate);
  */
 router.get('/settlements/me', authMiddleware, authorize(['seller']), SettlementController.getMine);
 router.post('/settlements', authMiddleware, authorize(['admin']), SettlementController.create);
+
+/**
+ * Address Routes
+ */
+const addressRules = {
+  full_name: 'required|string',
+  phone: 'required|string',
+  city: 'required|string',
+  street: 'required|string'
+};
+router.post('/addresses', authMiddleware, validate(addressRules), AddressController.create);
+router.get('/addresses/me', authMiddleware, AddressController.getAll);
+router.get('/addresses/:id', authMiddleware, AddressController.getById);
+router.put('/addresses/:id', authMiddleware, AddressController.update);
+router.delete('/addresses/:id', authMiddleware, AddressController.delete);
+router.put('/addresses/:id/default', authMiddleware, AddressController.setDefault);
+
+/**
+ * Wishlist Routes
+ */
+router.post('/wishlist', authMiddleware, WishlistController.add);
+router.get('/wishlist/me', authMiddleware, WishlistController.getAll);
+router.delete('/wishlist', authMiddleware, WishlistController.clear);
+router.delete('/wishlist/:productId', authMiddleware, WishlistController.remove);
+
+/**
+ * Inventory Routes
+ */
+const inventoryAdjustRules = {
+  variant_id: 'required|string',
+  quantity_change: 'required|numeric'
+};
+router.get('/inventory/low-stock', authMiddleware, authorize(['seller', 'seller_staff', 'admin']), InventoryController.getLowStock);
+router.get('/inventory/:variantId/history', authMiddleware, authorize(['seller', 'seller_staff', 'admin']), InventoryController.getHistory);
+router.post('/inventory/adjust', authMiddleware, authorize(['seller', 'admin']), validate(inventoryAdjustRules), InventoryController.adjust);
+
+/**
+ * Admin Activity Log Routes
+ */
+router.get('/admin/logs', authMiddleware, authorize(['admin']), AdminLogController.getLogs);
 
 module.exports = router;

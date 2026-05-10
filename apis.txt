@@ -1,0 +1,105 @@
+To test your API like a professional developer, you should follow this sequence. I have provided the exact JSON payloads you need for Postman.
+
+** Base URL : http://localhost:3000/api **
+
+### 1. Authentication (Start Here)
+Register Customer
+
+- Endpoint : POST /auth/register
+- Body :
+```
+{
+  "full_name": "Test User",
+  "email": "user@example.com",
+  "password": "password123",
+  "phone": "03001234567",
+  "role": "customer"
+}
+```
+Login (Get Token)
+
+- Endpoint : POST /auth/login
+- Body : { "email": "user@example.com", "password": "password123" }
+- Note : Copy the token and add it to Postman's Auth > Bearer Token for all other requests.
+### 2. Seller Setup (Multi-vendor Flow)
+Apply for Seller Account
+
+- Endpoint : POST /sellers/register (Requires Token)
+- Body :
+```
+{
+  "shop_name": "Tech Haven",
+  "description": "Premium electronics store",
+  "ntn_number": "1234567-8",
+  "bank_name": "HBL",
+  "bank_account": "9900112233",
+  "bank_iban": "PK00HBL1234567890",
+  "ntn_doc_url": "http://docs.com/ntn.pdf",
+  "id_card_doc_url": "http://docs.com/id.pdf"
+}
+```
+Admin: Approve Seller
+
+- Endpoint : PUT /sellers/:id/approve (Get ID from the registration response)
+### 3. Product Management
+Create Product
+
+- Endpoint : POST /products (Requires Seller Token)
+- Body :
+```
+{
+  "title": "Galaxy S24 Ultra",
+  "base_price": 350000,
+  "category_id": 
+  "PASTE_CATEGORY_ID_FROM_SEEDER",
+  "brand_id": "PASTE_BRAND_ID_FROM_SEEDER",
+  "seller_id": "PASTE_SELLER_ID",
+  "variants": [
+    { "color": "Titanium Gray", "size": 
+    "256GB", "price": 350000, "stock_qty": 
+    10, "sku": "S24-TG-256" }
+  ]
+}
+```
+### 4. The Checkout Flow
+Place Order
+
+- Endpoint : POST /orders (Requires Customer Token)
+- Body :
+```
+{
+  "address_id": "UUID_OF_ADDRESS",
+  "payment_method": "COD",
+  "items": [
+    { "variant_id": "UUID_OF_VARIANT", 
+    "quantity": 1, "unit_price": 350000 }
+  ]
+}
+```
+### 5. Marketing & Engagement
+Create Campaign (Admin)
+
+- Endpoint : POST /campaigns
+- Body :
+```
+{
+  "title": "11.11 Mega Sale",
+  "slug": "11-11-sale",
+  "banner_url": "http://images.com/banner.
+  jpg",
+  "is_active": true
+}
+```
+Ask Product Question
+
+- Endpoint : POST /products/:id/ask
+- Body : { "question": "Is warranty international?" }
+### 6. Financials
+Get Wallet Balance
+
+- Endpoint : GET /wallet/me
+** How to handle IDs in Postman? **
+
+1. Run the Seeder : Run node scripts/seed.js first to get Category and Brand IDs.
+2. Variables : In Postman, you can save the token and productId as "Environment Variables" so you don't have to copy-paste them manually every time.
+These values will populate your database with real-world data and test every junction table (like seller_staff and campaign_products ) we built!

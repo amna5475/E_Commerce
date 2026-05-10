@@ -86,6 +86,19 @@ const ProductController = {
   },
 
   /**
+   * Get all public questions for a product
+   */
+  getQuestions: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const questions = await ProductService.getProductQuestions(id);
+      return ResponseHelper.success(res, 'Questions retrieved successfully', questions);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
    * Ask a question about a product
    */
   askQuestion: async (req, res, next) => {

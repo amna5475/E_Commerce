@@ -1,4 +1,5 @@
 const SellerService = require('../services/sellerService');
+const AdminLogService = require('../services/adminLogService');
 const ResponseHelper = require('../helpers/responseHelper');
 
 /**
@@ -25,6 +26,15 @@ const SellerController = {
     try {
       const { id } = req.params;
       const seller = await SellerService.approveSeller(id);
+      // Audit log
+      await AdminLogService.log(
+        req.user.id,
+        'APPROVE_SELLER',
+        'sellers',
+        id,
+        { shop_name: seller.shop_name },
+        req.ip
+      );
       return ResponseHelper.success(res, 'Seller approved successfully', seller);
     } catch (error) {
       next(error);
@@ -39,6 +49,15 @@ const SellerController = {
       const { id } = req.params;
       const { reason } = req.body;
       const seller = await SellerService.rejectSeller(id, reason);
+      // Audit log
+      await AdminLogService.log(
+        req.user.id,
+        'REJECT_SELLER',
+        'sellers',
+        id,
+        { shop_name: seller.shop_name, reason },
+        req.ip
+      );
       return ResponseHelper.success(res, 'Seller rejected successfully', seller);
     } catch (error) {
       next(error);
